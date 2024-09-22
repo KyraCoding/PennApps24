@@ -6,11 +6,8 @@ void setup() {
 }
 
 void  loop() {
-  while (!Serial.available());
+  if (Serial.available());
   x = Serial.readString();
   x.trim();
-  if (x.length() > 0) {
-    Serial.print(x);
-  }
-  
+  Serial.print(x);
 }

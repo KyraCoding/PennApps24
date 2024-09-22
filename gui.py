@@ -4,21 +4,28 @@ from ctypes import windll
 import serial
 from PIL import Image, ImageTk
 import time 
+import asyncio
+import threading
 
 try:
     arduino = serial.Serial(port='COM5',  baudrate=115200, timeout=.1)
 except:
-    print("Failed to connect to Arduino!")
-
+    print("Failed to connect to Arduino! (Are you connected to the right port?)")
+    exit()
 windll.shcore.SetProcessDpiAwareness(1)
 
 # Globals, constants and stuff
-def sendCommand(cmd):
-    print("sending command: " + cmd)
+activeSend = False
+async def sendData(cmd):
+    print("Trying to send data to Arduino...")
     arduino.write(bytes(cmd, 'utf-8'))
-
+    data = arduino.readline().decode('utf-8').strip()
+    while (data == ""):
+        data = arduino.readline().decode('utf-8').strip()
+    print("received response: " + str(data))
 def show_frame(frame):
     frame.tkraise()
+
 
 def stringToBraille(string):
     # Start from upper left corner
@@ -72,7 +79,8 @@ def stringToBraille(string):
             output+=str(braille_char)
     return output[::-1]
 
-def readFile():
+async def readFile():
+    global activeSend
     file_path = filedialog.askopenfilename(
         title="Select a Text File",
         filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
@@ -81,8 +89,17 @@ def readFile():
         with open(file_path, 'r') as file:
             file_content = file.read()
             lines = file_content.split("\n")
+            if (activeSend == True):
+                print("Already sending data to Arduino! Please wait for the current data to finish sending.")
+                return
+            activeSend = True
             for line in lines:
                 print(stringToBraille(line))
+                await sendData(stringToBraille(line))
+            activeSend = False
+
+def start_async_read_file():
+    asyncio.run(readFile())
 
 root = Tk()
 
@@ -101,10 +118,10 @@ root.resizable(width=False, height=False)
 # Title text
 message = Label(root, text="PennApps24")
 message.pack()
-Button(root, text="clockwise", command=lambda: sendCommand("clockwise")).pack()
-Button(root, text="counterclockwise",command=lambda: sendCommand("counterclockwise")).pack()
+Button(root, text="clockwise", command=lambda: sendData("clockwise")).pack()
+Button(root, text="counterclockwise",command=lambda: sendData("counterclockwise")).pack()
 
 # File selector
-Button(root, text="Open Text File", command=readFile).pack()
+Button(root, text="Open Text File", command=lambda: threading.Thread(target=start_async_read_file).start()).pack()
 root.mainloop()
 
