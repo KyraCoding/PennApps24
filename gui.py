@@ -25,52 +25,52 @@ def stringToBraille(string):
     # Down, Down, Down, Right, Up, Up
     # End at upper right corner 
     braille = {
-        'a': [True, False, False, False, False, False],
-        'b': [True, True, False, False, False, False],
-        'c': [True, False, False, False, False, True],
-        'd': [True, False, False, False, True, True],
-        'e': [True, False, False, False, True, False],
-        'f': [True, True, False, False, False, True],
-        'g': [True, True, False, False, True, True],
-        'h': [True, True, False, False, True, False],
-        'i': [False, True, False, False, False, True],
-        'j': [False, True, False, False, True, True],
-        'k': [True, False, True, False, False, False],
-        'l': [True, True, True, False, False, False],
-        'm': [True, False, True, False, False, True],
-        'n': [True, False, True, False, True, True],
-        'o': [True, False, True, False, True, False],
-        'p': [True, True, True, False, False, True],
-        'q': [True, True, True, False, True, True],
-        'r': [True, True, True, False, True, False],
-        's': [False, True, True, False, False, True],
-        't': [False, True, True, False, True, True],
-        'u': [True, False, True, True, False, False],
-        'v': [True, True, True, True, False, False],
-        'w': [False, True, True, True, True, False],
-        'x': [True, False, True, True, False, True],
-        'y': [True, False, True, True, True, True],
-        'z': [True, False, True, True, True, False],
-        ' ': [False, False, False, False, False, False],
-        '#': [False, False, True, True, True, True],
-        '1': [True, False, False, False, False, False],
-        '2': [True, True, False, False, False, False],
-        '3': [True, False, False, False, False, True],
-        '4': [True, False, False, False, True, True],
-        '5': [True, False, False, False, True, False],
-        '6': [True, True, False, False, False, True],
-        '7': [True, True, False, False, True, True],
-        '8': [True, True, False, False, True, False],
-        '9': [False, True, False, False, False, True],
-        '0': [False, True, False, False, True, True]
+        'a': "100000",
+        'b': "110000",
+        'c': "100001",
+        'd': "100011",
+        'e': "100010",
+        'f': "110001",
+        'g': "110011",
+        'h': "110010",
+        'i': "010001",
+        'j': "010011",
+        'k': "101000",
+        'l': "111000",
+        'm': "101001",
+        'n': "101011",
+        'o': "101010",
+        'p': "111001",
+        'q': "111011",
+        'r': "111010",
+        's': "011001",
+        't': "011011",
+        'u': "101100",
+        'v': "111100",
+        'w': "011110",
+        'x': "101101",
+        'y': "101111",
+        'z': "101110",
+        ' ': "000000",
+        '#': "001111",
+        '1': "100000",
+        '2': "110000",
+        '3': "100001",
+        '4': "100011",
+        '5': "100010",
+        '6': "110001",
+        '7': "110011",
+        '8': "110010",
+        '9': "010001",
+        '0': "010011"
     }   
-    output = []
+    output = ""
     for char in string:
         char = char.lower()
         braille_char = braille.get(char)
         if (braille_char != None):
-            output.append(braille_char)
-    return output
+            output+=str(braille_char)
+    return output[::-1]
 
 def readFile():
     file_path = filedialog.askopenfilename(
